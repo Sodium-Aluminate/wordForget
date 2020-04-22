@@ -1,4 +1,4 @@
-package AlPt;
+package alpt;
 
 
 public class WordInfo {
