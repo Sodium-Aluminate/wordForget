@@ -1,4 +1,4 @@
-package AlPt;
+package alpt;
 
 import java.util.*;
 
@@ -8,18 +8,9 @@ public class WordManager {
     private ArrayList<String> words;
 
     public static class Builder{
-        private HashMap<String, WordInfo> wordMap;
-        public Builder(){}
-        public void add(String word){
-            wordMap.put(word, new WordInfo());
-        }
-        public void add(String word, String wordInfo){
-            wordMap.put(word, new WordInfo(wordInfo));
-        }
-
         public static WordManager restore(String from, Collection<String> words){
 
-            HashMap<String, WordInfo> wordMap = new HashMap();
+            HashMap<String, WordInfo> wordMap = new HashMap<>();
             for (String word:words) {
                 wordMap.put(word, new WordInfo());
             }
@@ -30,12 +21,9 @@ public class WordManager {
             }
             return new WordManager(wordMap);
         }
-        public WordManager build(){
-            return new WordManager(wordMap);
-        }
 
         public static WordManager build(Collection<String> words){
-            HashMap<String, WordInfo> wordMap = new HashMap();
+            HashMap<String, WordInfo> wordMap = new HashMap<>();
             for (String word:words) {
                 wordMap.put(word, new WordInfo());
             }
@@ -54,7 +42,7 @@ public class WordManager {
             long curTime = System.currentTimeMillis();
             WeightCalculator weightCalculator = (pass, total, time) -> {
                 double delta = (curTime-time);
-                return (double) 25*pass/(total+4)/Math.log(delta+10*1000);
+                return (double) 25*pass/(total+4)/Math.log(delta+100);
             };
             if(s1.equals(s2))return 0;
             double d = (wordMap.get(s1).weight(weightCalculator) - wordMap.get(s2).weight(weightCalculator));
@@ -104,4 +92,13 @@ public class WordManager {
     public int size(){
         return wordMap.size();
     }
+
+    public int oldCount() {
+        int i = 0;
+        for (WordInfo w:wordMap.values()) {
+            if(!w.isNew()) i++;
+        }
+        return i;
+    }
+
 }
