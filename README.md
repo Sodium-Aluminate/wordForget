@@ -1,6 +1,8 @@
 # wordForget
 a word coach without word list.
 
+[中文](README_CN.md)
+
 ## format
 words must match word+"**\\t**"+meaning, and each line can contain only one word.
 
