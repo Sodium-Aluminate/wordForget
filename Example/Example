@@ -1,3 +1,5 @@
 AlPt	n. 铝箔
 NaAlOH4	n. 四羟基合铝酸钠
 C13H16N2・HCI	盐酸四氢唑林
+any line without tab will be ignore
+# and line starts with "#" will be ignore too
