@@ -4,12 +4,14 @@ a word coach without word list.
 ## format
 words must match word+"**\\t**"+meaning, and each line can contain only one word.
 
-you may need to change the format if your vocabulary list was copied from somw website.
+you may need to change the format if your vocabulary list was copied from somw website. (tips: try excel?)
 
 if your computer can't input tab, copy one from somewhere else.  
 
 ## args
-path=\<words list file\> savePath=\<the data about how much you Forgot should be placed\>
+`path=<words list file> savePath=<the data about how much you Forgot should be placed>`
+
+save path is not necessary.
 
 ## usage 
 `q` for exit program
@@ -22,6 +24,6 @@ input `k` for skip this word(you will never see it anymore), `u` for undo last "
 
 input nothing(just press Enter key) to display meaning;
 
-`w` for save, `q` for exit.
+`w` for save, `q` for save & exit.
 
 so what about `wq`? sorry, it's not vim ;)
