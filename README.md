@@ -6,6 +6,8 @@ a word coach without word list.
 ## format
 words must match word+"**\\t**"+meaning, and each line can contain only one word.
 
+the word can included any character but `=`
+
 you may need to change the format if your vocabulary list was copied from somw website. (tips: try excel?)
 
 if your computer can't input tab, copy one from somewhere else.  
