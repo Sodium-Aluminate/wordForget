@@ -3,35 +3,46 @@ package alpt;
 import java.util.*;
 
 public class WordManager {
-    private HashMap<String, WordInfo> wordMap;
+    private HashMap<String, ForgetInfo> wordMap;
 
     private ArrayList<String> words;
 
     public static class Builder{
-        public static WordManager restore(String from, Collection<String> words){
-
-            HashMap<String, WordInfo> wordMap = new HashMap<>();
-            for (String word:words) {
-                wordMap.put(word, new WordInfo());
-            }
-            String[] s1 = from.split("\n");
+        private static HashMap<String, ForgetInfo> fromSave(String save){
+            HashMap<String, ForgetInfo> wordMap = new HashMap<>();
+            String[] s1 = save.split("\n");
             for (String s2:s1) {
                 String[] s3 = s2.split("=");
-                wordMap.put(s3[0], new WordInfo(s3[1]));
+                wordMap.put(s3[0], new ForgetInfo(s3[1]));
+            }
+            return wordMap;
+        }
+
+        public static WordManager restore(String save, Collection<String> words){
+
+            HashMap<String, ForgetInfo> wordMap = new HashMap<>();
+            HashMap<String, ForgetInfo> fromMap = fromSave(save);
+            for (String word:words) {
+                wordMap.put(word, new ForgetInfo());
+            }
+
+            for(Map.Entry<String, ForgetInfo> entry:fromMap.entrySet()){
+                if(wordMap.containsKey(entry.getKey()))
+                    wordMap.put(entry.getKey(),entry.getValue());
             }
             return new WordManager(wordMap);
         }
 
         public static WordManager build(Collection<String> words){
-            HashMap<String, WordInfo> wordMap = new HashMap<>();
+            HashMap<String, ForgetInfo> wordMap = new HashMap<>();
             for (String word:words) {
-                wordMap.put(word, new WordInfo());
+                wordMap.put(word, new ForgetInfo());
             }
             return new WordManager(wordMap);
         }
     }
 
-    private WordManager(HashMap<String, WordInfo> wordMap){
+    private WordManager(HashMap<String, ForgetInfo> wordMap){
         this.wordMap = wordMap;
         words = new ArrayList<>(wordMap.keySet());
         sort();
@@ -64,28 +75,29 @@ public class WordManager {
         return s;
     }
 
-    public WordInfo get(String word){
+    public ForgetInfo get(String word){
         return wordMap.get(word);
     }
 
-    public String backup(){
-
-        Iterator<Map.Entry<String, WordInfo>> i = wordMap.entrySet().iterator();
-
-            StringBuilder sb = new StringBuilder();
-            while(true) {
-                if (!i.hasNext()) {
-                    return sb.toString();
-                }
-                Map.Entry<String, WordInfo> e = i.next();
-                String key = e.getKey();
-                WordInfo value = e.getValue();
-                if(value.isNew()) continue;
-                sb.append(key);
-                sb.append('=');
-                sb.append(value);
-                sb.append('\n');
+    public String save(String originalString){
+        HashMap<String, ForgetInfo> saveMap;
+        if(originalString==null){
+            saveMap = wordMap;
+        }else {
+            saveMap = Builder.fromSave(originalString);
+            for (Map.Entry<String,ForgetInfo> entry:wordMap.entrySet()) {
+                saveMap.put(entry.getKey(),entry.getValue());
             }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String,ForgetInfo> entry:saveMap.entrySet()){
+            String key = entry.getKey();
+            ForgetInfo value = entry.getValue();
+            if(value.isNew()) continue;
+            sb.append(key).append('=').append(value).append('\n');
+        }
+
+        return sb.toString();
 
     }
 
@@ -95,7 +107,7 @@ public class WordManager {
 
     public int oldCount() {
         int i = 0;
-        for (WordInfo w:wordMap.values()) {
+        for (ForgetInfo w:wordMap.values()) {
             if(!w.isNew()) i++;
         }
         return i;
