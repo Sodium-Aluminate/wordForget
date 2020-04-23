@@ -1,7 +1,7 @@
 package alpt;
 
 
-public class WordInfo {
+public class ForgetInfo {
     public boolean isSkipped() {
         return skipped;
     }
@@ -23,7 +23,7 @@ public class WordInfo {
         return (skipped ? "S" : "K") + passedTimes + "/" + totalTimes + "/" + lastCheck;
     }
 
-    public WordInfo(String s) {
+    public ForgetInfo(String s) {
         if (s.startsWith("S")) {
             skipped = true;
         } else if (s.startsWith("K")) {
@@ -36,7 +36,7 @@ public class WordInfo {
         check();
     }
 
-    public WordInfo() {
+    public ForgetInfo() {
         this.skipped = false;
         this.passedTimes = 0;
         this.totalTimes = 0;

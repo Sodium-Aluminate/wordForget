@@ -1,4 +1,4 @@
-package AlPt;
+package alpt;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.Scanner;
 
 public class EngToZh {
-    static MeaningManager meaning = null;
+    static VocabularyManager meaning = null;
     static WordManager words = null;
     static Scanner scanner = new Scanner(System.in);
     static String path;
@@ -61,6 +61,7 @@ public class EngToZh {
                         print(meaning.getMeaning(w));
                         println("");
                     }
+                    break;
                 default:
                     println("?");
             }
@@ -70,35 +71,37 @@ public class EngToZh {
     private static void init() throws IOException {
         if (path == null) return;
         if (savePath == null) savePath = path + ".save";
-        meaning = new MeaningManager(new File(path));
-        if (new File(savePath).isFile())
+        meaning = new VocabularyManager(new File(path));
+        if (new File(savePath).isFile()) {
             words = WordManager.Builder.restore(new String(Files.readAllBytes(Path.of(savePath))), meaning.getWords());
-        else
+            println("import finished, " + words.oldCount() + " saves imported, total " + meaning.size() + " words");
+        } else {
             words = WordManager.Builder.build(meaning.getWords());
-        println("import finished, " + words.size() + " saves imported, total "+meaning.size()+" words");
+            println("import finished, total " + meaning.size() + " words");
+        }
         init = true;
     }
 
 
     public static void main() throws IOException {
         println("1 for remember, 0 for forgot, space for show meanings, k for skip, u for undo the last skip, q for exit, w for save");
-        WordInfo wordInfo;
-        WordInfo lastSkip = null;
+        ForgetInfo forgetInfo;
+        ForgetInfo lastSkip = null;
         boolean showMeaning;
 
         while (true) {
             for (String word : words.get(10)) {
-                wordInfo = words.get(word);
+                forgetInfo = words.get(word);
                 clear();
-                print("\n"+word + "\t" + wordInfo.score() + "\t" + calP(wordInfo) + "\t");
+                print("\n"+word + "\t" + forgetInfo.score() + "\t" + calP(forgetInfo) + "\t");
                 showMeaning = false;
                 ask: while (true) {
                     switch (scanner.nextLine().toLowerCase().replaceAll("[^0-9a-z]", "")) {
                         case "1":
-                            wordInfo.passed();
+                            forgetInfo.passed();
                             break ask;
                         case "0":
-                            wordInfo.failed();
+                            forgetInfo.failed();
                             break ask;
                         case "":
                             if(showMeaning)break;
@@ -106,8 +109,8 @@ public class EngToZh {
                             showMeaning = true;
                             break;
                         case "k":
-                            wordInfo.skip();
-                            lastSkip = wordInfo;
+                            forgetInfo.skip();
+                            lastSkip = forgetInfo;
                             break ask;
                         case "u":
                             if(lastSkip==null) {
@@ -126,7 +129,7 @@ public class EngToZh {
                             return;
                         case "w":
                             save();
-                            print(word + "\t" + wordInfo.score() + "\t" + calP(wordInfo)+"\t");
+                            print(word + "\t" + forgetInfo.score() + "\t" + calP(forgetInfo)+"\t");
                             break;
                         default:
                             println("?");
@@ -142,19 +145,21 @@ public class EngToZh {
         print("\nsaving...");
         File save = new File(savePath);
         words.sort();
+        String oldString = save.exists()?new String(Files.readAllBytes(Path.of(savePath))):null;
+        String newString = words.save(oldString);
         if (!save.exists()) {
             save.createNewFile();
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(savePath))) {
-            bw.write(words.backup());
+            bw.write(newString);
         }
         clear();
         println("\tsaved\n");
     }
 
-    private static double calP(WordInfo wordInfo) {
+    private static double calP(ForgetInfo forgetInfo) {
         long curTime = System.currentTimeMillis();
-        return wordInfo.weight((pass, total, time) -> {
+        return forgetInfo.weight((pass, total, time) -> {
             double delta = (curTime - time);
             return (double) 25 * pass / (total + 4) / Math.log(delta + 10 * 1000);
         });
