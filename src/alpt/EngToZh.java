@@ -1,8 +1,7 @@
 package alpt;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.Scanner;
 
 public class EngToZh {
@@ -12,11 +11,13 @@ public class EngToZh {
     static String path;
     static String savePath;
     static boolean init = false;
+    static String stupidClearWay = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+
 
     public static void main(String[] args) throws IOException {
         for (String s : args) {
             if (s.toLowerCase().matches("-{0,2}stupid[-_]?clean")) {
-                clearWay = () -> print("\n".repeat(100));
+                clearWay = () -> print(stupidClearWay);
             }
             if (s.startsWith("path="))
                 path = s.substring(5);
@@ -73,7 +74,7 @@ public class EngToZh {
         if (savePath == null) savePath = path + ".save";
         meaning = new VocabularyManager(new File(path));
         if (new File(savePath).isFile()) {
-            words = WordManager.Builder.restore(new String(Files.readAllBytes(Path.of(savePath))), meaning.getWords());
+            words = WordManager.Builder.restore(new String(Files.readAllBytes(pathOf(savePath))), meaning.getWords());
             println("import finished, " + words.oldCount() + " saves imported, total " + meaning.size() + " words");
         } else {
             words = WordManager.Builder.build(meaning.getWords());
@@ -141,11 +142,15 @@ public class EngToZh {
         }
     }
 
+    public static Path pathOf(String first, String... more) {
+        return FileSystems.getDefault().getPath(first, more);
+    }
+
     private static void save() throws IOException {
         print("\nsaving...");
         File save = new File(savePath);
         words.sort();
-        String oldString = save.exists()?new String(Files.readAllBytes(Path.of(savePath))):null;
+        String oldString = save.exists()?new String(Files.readAllBytes(pathOf(savePath))):null;
         String newString = words.save(oldString);
         if (!save.exists()) {
             save.createNewFile();
