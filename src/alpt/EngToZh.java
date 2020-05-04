@@ -91,7 +91,7 @@ public class EngToZh {
         boolean showMeaning;
 
         while (true) {
-            for (String word : words.get(10)) {
+            for (String word : words.get(6)) {
                 forgetInfo = words.get(word);
                 clear();
                 print("\n"+word + "\t" + forgetInfo.score() + "\t" + calP(forgetInfo) + "\t");
