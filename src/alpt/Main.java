@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.Scanner;
 
-public class EngToZh {
+public class Main {
     static VocabularyManager meaning = null;
     static WordManager words = null;
     static Scanner scanner = new Scanner(System.in);
