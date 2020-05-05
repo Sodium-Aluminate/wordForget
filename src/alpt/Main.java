@@ -162,13 +162,15 @@ public class Main {
         println("\tsaved\n");
     }
 
+    private static final String[] spaces = {"", " ", "  ", "   ", "    ", "     ", "      "};
     private static String calP(ForgetInfo forgetInfo) {
         long curTime = System.currentTimeMillis();
-        if(forgetInfo.isSkipped())return "SKIPPED_9999999999";
-        return String.valueOf(forgetInfo.weight((pass, total, time) -> {
+        if(forgetInfo.isSkipped())return "SKIPPED";
+        String toReturn = String.valueOf(forgetInfo.weight((pass, total, time) -> {
             double delta = (curTime - time);
             return (double) 25*(pass+2)/(total+8)/Math.log(delta+100);
         }));
+        return toReturn.length()>7?toReturn.substring(0,7):(toReturn+spaces[7-toReturn.length()]);
     }
 
     public static void println(Object o) {
