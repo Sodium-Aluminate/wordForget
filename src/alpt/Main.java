@@ -88,6 +88,7 @@ public class Main {
         println("1 for remember, 0 for forgot, space for show meanings, k for skip, u for undo the last skip, q for exit, w for save");
         ForgetInfo forgetInfo;
         ForgetInfo lastSkip = null;
+        String lastSkipWord = null;
         boolean showMeaning;
 
         while (true) {
@@ -112,6 +113,7 @@ public class Main {
                         case "k":
                             forgetInfo.skip();
                             lastSkip = forgetInfo;
+                            lastSkipWord = word;
                             break ask;
                         case "u":
                             if(lastSkip==null) {
@@ -119,11 +121,11 @@ public class Main {
                                 break;
                             }
                             if (lastSkip.uSkip()) {
-
-                                println("re-skipped");
+                                print("re");
                             } else {
-                                println("un-skipped");
+                                print("un");
                             }
+                            println("-skipped \""+lastSkipWord+"\"");
                             break;
                         case "q":
                             save();
