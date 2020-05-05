@@ -166,7 +166,7 @@ public class Main {
         long curTime = System.currentTimeMillis();
         return forgetInfo.weight((pass, total, time) -> {
             double delta = (curTime - time);
-            return (double) 25*(pass+2)/(total+5)/Math.log(delta+100);
+            return (double) 25*(pass+2)/(total+8)/Math.log(delta+100);
         });
     }
 
