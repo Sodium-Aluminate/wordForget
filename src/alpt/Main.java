@@ -162,12 +162,13 @@ public class Main {
         println("\tsaved\n");
     }
 
-    private static double calP(ForgetInfo forgetInfo) {
+    private static String calP(ForgetInfo forgetInfo) {
         long curTime = System.currentTimeMillis();
-        return forgetInfo.weight((pass, total, time) -> {
+        if(forgetInfo.isSkipped())return "SKIPPED_9999999999";
+        return String.valueOf(forgetInfo.weight((pass, total, time) -> {
             double delta = (curTime - time);
             return (double) 25*(pass+2)/(total+8)/Math.log(delta+100);
-        });
+        }));
     }
 
     public static void println(Object o) {
