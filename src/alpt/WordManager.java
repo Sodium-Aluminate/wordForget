@@ -53,7 +53,7 @@ public class WordManager {
             long curTime = System.currentTimeMillis();
             WeightCalculator weightCalculator = (pass, total, time) -> {
                 double delta = (curTime-time);
-                return (double) 25*pass/(total+4)/Math.log(delta+100);
+                return (double) 25*(pass+2)/(total+5)/Math.log(delta+100);
             };
             if(s1.equals(s2))return 0;
             double d = (wordMap.get(s1).weight(weightCalculator) - wordMap.get(s2).weight(weightCalculator));
