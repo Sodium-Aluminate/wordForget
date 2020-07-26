@@ -12,17 +12,25 @@ public class Main {
     static String savePath;
     static boolean init = false;
     static String stupidClearWay = "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-
+    static boolean startRightNow = false;
 
     public static void main(String[] args) throws IOException {
         for (String s : args) {
             if (s.toLowerCase().matches("-{0,2}stupid[-_]?clean")) {
                 clearWay = () -> print(stupidClearWay);
+                continue;
             }
-            if (s.startsWith("path="))
+            if (s.startsWith("path=")) {
                 path = s.substring(5);
-            if (s.startsWith("savePath="))
+                continue;
+            }
+            if (s.startsWith("savePath=")) {
                 savePath = s.substring(9);
+                continue;
+            }
+            if (s.equalsIgnoreCase("fastStart")){
+                startRightNow = true;
+            }
         }
 
         init();
@@ -33,7 +41,13 @@ public class Main {
                 println("not init yet, use \"import\"\n\timport path_of_file [path_of_save]\tdefault save file will be create as \"original_name\".save ");
             else
                 println("input \"start\" to start.");
-            input = scanner.nextLine().split(" ");
+            if(startRightNow){
+                println("auto started.");
+                input = new String[]{"start"};
+                startRightNow = false;
+            }else {
+                input = scanner.nextLine().split(" ");
+            }
             switch (input[0].toLowerCase()) {
                 case "import":
                     path = input[1];
@@ -42,6 +56,7 @@ public class Main {
                     init();
                     break;
                 case "start":
+                case "s":
                     if (!init) {
                         println("import anything first");
                         continue;
@@ -52,7 +67,15 @@ public class Main {
                     return;
                 case "p":
                     words.sort();
-                    int count = input.length > 1 ? Integer.parseInt(input[1]) : 10;
+                    int count;
+                    if( input.length > 1 ){
+                        if(input[1].equalsIgnoreCase("all")){
+                            count = words.size();
+                        }else {
+                            count = Integer.parseInt(input[1]);
+                        }
+                    } else count = 10;
+                    words.sort();
                     String[] ws = words.get(count);
                     for (String w : ws) {
                         print(words.get(w).score() + "\t" + calP(words.get(w)));
@@ -95,7 +118,8 @@ public class Main {
             for (String word : words.get(6)) {
                 forgetInfo = words.get(word);
                 clear();
-                print("\n"+word + "\t" + forgetInfo.score() + "\t" + calP(forgetInfo) + "\t");
+                int spaces = 20 - word.length();
+                print("\n"+word + repeat(" ", spaces) + forgetInfo.score() + "\t" + calP(forgetInfo) + "\t");
                 showMeaning = false;
                 ask: while (true) {
                     switch (scanner.nextLine().toLowerCase().replaceAll("[^0-9a-z]", "")) {
@@ -170,7 +194,7 @@ public class Main {
         if(forgetInfo.isSkipped())return "SKIPPED";
         String toReturn = String.valueOf(forgetInfo.weight((pass, total, time) -> {
             double delta = (curTime - time);
-            return (double) 25*(pass+2)/(total+8)/Math.log(delta+100);
+            return (double) 35*(pass+2)/(total+8)/Math.log(delta+100);
         }));
         return toReturn.length()>7?toReturn.substring(0,7):(toReturn+spaces[7-toReturn.length()]);
     }
@@ -198,4 +222,14 @@ public class Main {
         } catch (IOException ignore) {
         }
     };
+
+
+    private static String repeat(String s, int time){
+        StringBuilder stringBuilder = new StringBuilder();
+        if(time <1 )time = 1;
+        for (int i = 0; i < time; i++) {
+            stringBuilder.append(s);
+        }
+        return stringBuilder.toString();
+    }
 }

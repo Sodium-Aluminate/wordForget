@@ -74,6 +74,7 @@ public class ForgetInfo {
 
 
     public String score() {
-        return passedTimes +"/"+ totalTimes;
+
+        return (passedTimes < 10 ? "0" : "") + passedTimes + "/" + (totalTimes < 10 ? "0" : "") + totalTimes;
     }
 }
